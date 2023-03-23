@@ -70,6 +70,22 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -134,11 +150,13 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algos.hpp" />
+    <ClInclude Include="Matrix.hpp" />
+    <ClInclude Include="Neuron.hpp" />
     <ClInclude Include="Parser.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="IDX file format.txt" />
+    <Text Include="propagation.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\t10k-labels.idx1-ubyte" />

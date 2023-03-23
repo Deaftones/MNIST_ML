@@ -1,0 +1,16 @@
+****** FORWARD PROPAGATION ******
+WITHOUT BIAS ===
+	(1) assume x is E of R^d
+	(2) intermediate variable is 
+		z = W(1) * x
+		where W(1) : E of R^(h x d) is the weight parameter of the hidden layer.
+	(3) then you run z (E of R^h) through activation function phi and you obtain 
+		a hidden activation vector of length h, as follows:
+		h = phi(z);
+		note, h is also the hidden layer output, and is also an intermediate variable.
+	(4) Now, let's assume that the parameters of the output layer only possess a weight of 
+		W(2) E of R^(h x d)
+		we get output layer variable as a vector of length q.
+		o = W(2) x h;
+	(5) We then calculate a single Loss Term (L) by inputting (o) into loss function (l) using an example label (y):
+		L = l(o, y);

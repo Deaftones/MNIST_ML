@@ -7,6 +7,7 @@
 #include <array>
 #include <ios>
 #include <stdlib.h>
+#include <thread>
 
 class Imager;
 class Parser;
@@ -39,6 +40,8 @@ private:
 	std::string src_;
 	PARSE_MODE pm_;
 	uint16_t offset_;
+
+	bool is_init;
 	
 
 public:
@@ -46,7 +49,7 @@ public:
 	{
 		if (pm_ == PARSE_MODE::LABEL) { offset_ = 8; }
 		else offset_ = 16;
-		
+		is_init = true;
 	};
 
 	inline void read_file()
@@ -68,6 +71,7 @@ public:
 	inline std::vector<char>* get_vec_main() { return &vec_main; };
 	inline uint32_t get_num_items() { return num_items_; };
 	inline uint32_t get_chunk_size() { return chunk_size_; };
+	inline bool get_isInit() { return is_init; };
 };
 
 class Imager
@@ -98,7 +102,13 @@ public:
 			std::cout << "Created image number " << counter_ << " of " << nItems << std::endl;
 		};
 	};
+	inline std::vector<IMAGE>& get_v_images()
+	{
+		return v_images_;
+	};
 
 	~Imager(){}
 };
+
+
 
