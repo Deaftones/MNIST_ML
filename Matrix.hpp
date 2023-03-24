@@ -17,25 +17,43 @@ private:
 	Network* nt_;
 	Weights v_weights_;
 	std::vector<Weights> v_all_weights_;
-	std::vector<std::vector<double>> v_all_x_values_;
+	std::vector<Weights> v_all_x_values_; // [0] = input layer. [.size() - 1] = output layer
 	std::vector<Layer>* ptr_neural_network_;
 	
 	// === F L A G S === 
 	bool is_input_x_set_in_vector;
+	bool is_entire_x_set_in_vector;
 	bool is_weight_vector_made;
 	bool is_map_activation_fx_made;
 
 	// === private functions ===
 	inline void make_input_x_vector()
 	{
+		Weights twts;
 		std::vector<double> temppp;
 		for (auto& i : (*ptr_neural_network_)[0])
 		{
 			temppp.push_back(i.get_x());
 		};
-		v_all_x_values_.push_back(temppp);
+		twts.push_back(temppp);
+		v_all_x_values_.push_back(twts);
 		is_input_x_set_in_vector = true;
 	};
+	inline void make_remaining_x_vectors_skeleton()
+	{
+		Weights twts;
+		std::vector<double> temppp;
+		for (uint32_t i = 1; i < (*ptr_neural_network_).size() - 1; i++)
+		{
+			for (auto& j : (*ptr_neural_network_)[i])
+			{
+				temppp.push_back(0);
+			};
+			twts.push_back(temppp);
+			v_all_x_values_.push_back(twts);
+		};
+		is_entire_x_set_in_vector = true;
+	}
 	inline void make_input_and_hidden_weight_vector(const uint32_t tar_layer_index)
 	{
 		Weights tempwt;
@@ -71,6 +89,8 @@ private:
 		};
 		v_all_weights_.push_back(tempwt);
 	};
+
+	// === private calculations ===
 	struct activation_functions
 	{
 		static inline double ReLU(double x)
@@ -88,6 +108,89 @@ private:
 		static inline void Testy() { std::cout << "Testy" << std::endl; };
 	};
 	std::unordered_map <ACTIVATION_FUNCTION, PtrToDoubleFunction> m_activation_functions;
+	inline std::vector<std::vector<double>> make_bias_matrix(uint32_t layer_pending_a_calculation)
+	{
+		if (is_entire_x_set_in_vector == false) {
+			std::cerr << "ERROR: must set x value vector before making bias vector" << std::endl; exit(65);
+		};
+		std::vector<double> bias_v;
+		double bias;
+		bias = v_all_x_values_[layer_pending_a_calculation - 1][0]
+							  [v_all_x_values_[layer_pending_a_calculation - 1][0].size() - 1];
+		for (uint32_t i = 0; i < v_all_x_values_[layer_pending_a_calculation][0].size() - 1; i++)
+		{
+			bias_v.push_back(bias);
+		};
+		std::vector<std::vector<double>> shell; shell.push_back(bias_v);
+		return shell;
+	}
+	inline std::vector<std::vector<double>> calc_dot_product(const std::vector<std::vector<double>>& lhs,
+		const std::vector<std::vector<double>>& rhs)
+	{
+		//The number of columns of the 1st matrix must equal the number of rows of the 2nd matrix.
+		//And the result will have the same number of rows as the 1st matrix, and the same number 
+		//of columns as the 2nd matrix.
+		if (lhs.size() != rhs[0].size()) {
+			std::cerr << "Unable to calculate dot product due to nr of rows / columns"
+				<< std::endl; exit(44);
+		};
+		std::vector<std::vector<double>> dot_product;
+
+		//building null vector
+		for (uint32_t i = 0; i < rhs.size(); i++)
+		{
+			std::vector<double> zeros;
+			for (uint32_t j = 0; j < lhs[i].size(); j++)
+			{
+				zeros.push_back(0);
+			};
+			dot_product.push_back(zeros);
+		};
+
+		for (uint32_t i = 0; i < rhs.size(); i++)
+		{
+			for (uint32_t j = 0; j < lhs[i].size(); j++)
+			{
+				for (uint32_t x = 0; x < lhs.size(); x++)
+				{
+					dot_product[i][j] += lhs[x][j] * rhs[i][x];
+				}
+			}
+		};
+		return dot_product;
+	};
+	inline std::vector<std::vector<double>> calc_matrix_addition(const std::vector<std::vector<double>>& lhs,
+		const std::vector<std::vector<double>>& rhs)
+	{
+		if (lhs.size() != rhs.size() || lhs[0].size() != rhs[0].size())
+		{
+			std::cerr << "ERROR: Matrices must have the same dimensions" << std::endl; exit(67);
+		};
+		std::vector<std::vector<double>> summed;
+		for (uint32_t i = 0; i < lhs.size(); i++)
+		{
+			for (uint32_t j = 0; j < lhs[0].size(); j++)
+			{
+				summed[i][j] = lhs[i][j] + rhs[i][j];
+			};
+		};
+		return summed;
+	};
+	inline std::vector<double> calc_aNeuron_values_by_layer(uint32_t layer, ACTIVATION_FUNCTION af)
+	{
+		double temp;
+		std::vector<double> bias_vector;
+		std::vector<std::vector<double>> dot_result;
+		dot_result = calc_dot_product(v_all_weights_[layer - 1], v_all_x_values_[layer - 1]);
+		std::vector<std::vector<double>> after_bias;
+		after_bias = calc_matrix_addition(dot_result, make_bias_matrix(layer));
+		std::vector<double> a_values;
+		for (auto& i : after_bias[0])
+		{
+			a_values.push_back(m_activation_functions[af](i));
+		};
+		return a_values;
+	};
 
 public:
 	inline Matrix(Network* nt) : nt_(nt) {
@@ -95,6 +198,7 @@ public:
 		is_input_x_set_in_vector = false;
 		is_weight_vector_made = false;
 		is_map_activation_fx_made = false;
+		is_entire_x_set_in_vector = false;
 	};
 	inline ~Matrix() { nt_ = nullptr; ptr_neural_network_ = nullptr; };
 	inline Weights const get_weights_vector() { return v_weights_; };
@@ -116,43 +220,30 @@ public:
 		m_activation_functions.insert({ ACTIVATION_FUNCTION::Sigmoid, ptr_sigmoid });
 		is_map_activation_fx_made = true;
 	}
-	inline std::vector<std::vector<double>> calc_dot_product(std::vector<std::vector<double>> lhs,
-		std::vector<std::vector<double>> rhs)
-	{
-		//The number of columns of the 1st matrix must equal the number of rows of the 2nd matrix.
-		//And the result will have the same number of rows as the 1st matrix, and the same number 
-		//of columns as the 2nd matrix.
-		std::vector<std::vector<double>> dot;
-		std::vector<double> temp;
-		if (lhs.size() != rhs[0].size()) {
-			std::cerr << "Unable to calculate dot product due to nr of rows / columns"
-				<< std::endl; exit(44);
-		};
-		for (uint32_t i = 0; i < lhs.size(); i++)
-		{
-			double add{};
-			for (uint32_t j = 0; j < lhs[i].size(); j++)
-			{
-				double d{};
-				d = lhs[i][j] + rhs
-			}
-		}
-
-	};
+	inline void make_x_values() { make_input_x_vector(); make_remaining_x_vectors_skeleton(); };
+	
 	inline void calc_neuron_values(ACTIVATION_FUNCTION af_all) 
 	{
 		if (is_map_activation_fx_made == false) {
 			std::cerr << "ERROR: must set activation function map"
 				<< std::endl; exit(69);
 		};
-		for (uint32_t i = 0; i < v_all_weights_.size(); i++)
+		for (uint32_t i = 1; i < v_all_x_values_.size(); i++)
 		{
-			
-		}
+			v_all_x_values_[i][0] = calc_aNeuron_values_by_layer(i, af_all);
+		};
 	};
-	inline void calc_neuron_values(ACTIVATION_FUNCTION af_hidden, ACTIVATION_FUNCTION af_output);
-	
-
-	
-
+	inline void calc_neuron_values(ACTIVATION_FUNCTION af_hidden, ACTIVATION_FUNCTION af_output)
+	{
+		if (is_map_activation_fx_made == false) {
+			std::cerr << "ERROR: must set activation function map"
+				<< std::endl; exit(69);
+		};
+		for (uint32_t i = 1; i < v_all_x_values_.size() - 1; i++)
+		{
+			v_all_x_values_[i][0] = calc_aNeuron_values_by_layer(i, af_hidden);
+		};
+		v_all_x_values_[v_all_x_values_.size()-1][0] = 
+			calc_aNeuron_values_by_layer((v_all_x_values_.size() - 1), af_output);
+	};
 };

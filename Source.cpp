@@ -8,46 +8,88 @@
 #include <string>
 #include <unordered_map>
 
-const std::string te_img = "C:\\Users\\serba\\source\\repos\\Deaftones\\MNIST_ML\\Data\\t10k_images.idx3-ubyte";
+/*const std::string te_img = "C:\\Users\\serba\\source\\repos\\Deaftones\\MNIST_ML\\Data\\t10k_images.idx3-ubyte";
 const std::string te_lab = "C:\\Users\\serba\\source\\repos\\Deaftones\\MNIST_ML\\Data\\t10k-labels.idx1-ubyte";
 const std::string tr_img = "C:\\Users\\serba\\source\\repos\\Deaftones\\MNIST_ML\\Data\\train-images.idx3-ubyte";
 const std::string tr_lab = "C:\\Users\\serba\\source\\repos\\Deaftones\\MNIST_ML\\Data\\train-labels-idx1-ubyte";
 
 const uint16_t label_skip = 8;
-const uint16_t img_skip = 16;
+const uint16_t img_skip = 16;*/
 
-typedef double(*DoublePtr)(double, double);
+typedef std::vector<std::vector<double>> matrix;
 
-double add(double x, double y) { return x + y; };
-double subtract(double x, double y) { return x - y; };
-double multiply(double x, double y) { return x * y; };
-double divide(double x, double y) { return x / y; };
-enum class formulae { add, subtract, multiply, divide };
-
-class wtf
+matrix dot_prod_test(const matrix& lhs, const matrix& rhs)
 {
-public:
-	std::unordered_map<formulae, DoublePtr> mymap;
-	inline void add_to_map()
+	matrix dot_product;
+	std::vector<double> temp;
+
+	//building null vector
+	for (uint32_t i = 0; i < rhs.size(); i++)
 	{
-		double (*ptr_add)(double, double);
-		ptr_add = &add;
-		mymap.insert({ formulae::add, ptr_add });
+		std::vector<double> zeros;
+		for (uint32_t j = 0; j < lhs[i].size(); j++)
+		{
+			zeros.push_back(0);
+		};
+		dot_product.push_back(zeros);
 	};
-	inline double apply_formula(formulae fr, double vala, double valb)
+
+	for (uint32_t i = 0; i < rhs.size(); i++)
 	{
-		double x{};
-		x = mymap[fr](vala, valb);
-		return x;
-	}
+		for (uint32_t j = 0; j < lhs[i].size(); j++)
+		{
+			for (uint32_t x = 0; x < lhs.size(); x++)
+			{
+				dot_product[i][j] += lhs[x][j] * rhs[i][x];
+			}
+		}
+	};
+
+	return dot_product;
 };
+
+void print_vector(matrix& x)
+{
+	for (int i = 0; i < x[0].size(); i++)
+	{
+		for (int j = 0; j < x.size(); j++)
+		{
+			std::cout << x[j][i] << "...";
+		};
+		std::cout << std::endl;
+	};
+};
+
+
 
 int main()
 {
-	wtf lol;
-	lol.add_to_map();
-	std::cout << lol.apply_formula(formulae::add, 3, 5);
-	
+	matrix lhs; matrix rhs;
+	for (int i = 1; i < 4; i++)
+	{
+		std::vector<double> temp;
+		for (int j = 1; j < 5; j++)
+		{
+			temp.push_back(j);
+		};
+		lhs.push_back(temp);
+	};
+
+	for (int i = 0; i < 3; i++)
+	{
+		std::vector<double> temp;
+		for (int j = 0; j < 3; j++)
+		{
+			temp.push_back(j);
+		};
+		rhs.push_back(temp);
+	};
+
+	matrix end = dot_prod_test(lhs, rhs);
+
+	std::cout << "LHS" << std::endl; print_vector(lhs);
+	std::cout << "RHS" << std::endl; print_vector(rhs);
+	std::cout << "Their Dot product" << std::endl; print_vector(end);
 
 	return 0;
 }
