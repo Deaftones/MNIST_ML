@@ -14,3 +14,23 @@ WITHOUT BIAS ===
 		o = W(2) x h;
 	(5) We then calculate a single Loss Term (L) by inputting (o) into loss function (l) using an example label (y):
 		L = l(o, y);
+
+
+
+***** BACKWARD PROPAGATION *****
+L2-norm loss:  L = 1/2 * (output - actual)^2
+
+Sigmoid function:  S(x) = 1 / (1 + e^-x)
+
+For a single weight U_ij  [i = previous layer, j = next layer]
+partial derivative of L w.r.t. the weight that contributed to that L (so, U_ij) is:
+ 
+ &L        &L    &y_j   &a_j(2)
+-----  =  ----- ------- ------
+&U_ij     &y_j  &a_j(2) &U_ij
+
+	L = L2-norm loss
+	U = weight between last hidden layer and the output layer
+	a(t) = linear combination of XW + Bias before activation function is applied, v
+	where t = the layer.
+	y = activated linear function (i.e. a(t) with activation fx applied to it)

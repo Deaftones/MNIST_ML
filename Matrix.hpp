@@ -1,6 +1,7 @@
 #pragma once
 #include "Neuron.hpp"
 #include <cmath>
+#include "Functions.hpp"
 
 typedef double (*PtrToDoubleFunction)(double);
 
@@ -191,6 +192,27 @@ private:
 		};
 		return a_values;
 	};
+	inline double calc_MSE_single(const double output_val, const double label_val)
+	{
+		// E_p = 1/2 (SUM(d_k - O_k)^2)
+		return ((output_val - label_val) * (output_val - label_val));
+	};
+	inline double calc_MSE_output(const std::vector<double>& label_vals)
+	{
+		double MSE{};
+		uint32_t num_vals = v_all_x_values_[v_all_x_values_.size() - 1][0].size();
+		for (uint32_t i = 0; i < num_vals; i++)
+		{
+			MSE += ((v_all_x_values_[v_all_x_values_.size() - 1][0][i] - label_vals[i]) *
+				(v_all_x_values_[v_all_x_values_.size() - 1][0][i] - label_vals[i]));
+		};
+		MSE = MSE / 2;
+		return MSE;
+	}
+	inline PtrToDoubleFunction calc_derivative(const double(*fxptr)(double))
+	{
+		
+	}
 
 public:
 	inline Matrix(Network* nt) : nt_(nt) {
