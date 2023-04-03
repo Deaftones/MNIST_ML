@@ -1,0 +1,12 @@
+
+
+
+
+f(x) = x^2 + 2x - 5
+
+
+Function fx;
+fx.add_constants('a', 'b', 'c'); // this assumes no values assigned
+
+
+fx.add_variables('x');

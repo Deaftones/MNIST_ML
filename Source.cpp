@@ -6,34 +6,31 @@
 #include <ios>
 #include <vector>
 #include <string>
+#include <utility>
 #include <unordered_map>
 
 
 
-class Again
-{
-public:
-	template <typename ... ARGS>
-	void print(ARGS&& ... args)
-	{
-		(void)std::initializer_list<int>{ (std::cout << args, 0) ... };
-	};
-};
 
-template < typename ... ARGS >
-void println(ARGS&& ... args)
-{
-	// the (void) is just used to avoid a 'expression result unused' warning
-	(void)std::initializer_list< int >{ (std::cout << args << std::endl, 0) ... };
-	std::cout << '\n';
-};
 
 class container
 {
+public:
+	struct constant
+	{
+		char symbol;
+		double value;
+		constant(char s, double v) : symbol(s), value(v) {};
+		~constant() {};
+	};
 private:
 	std::vector<char> v_constants;
+	std::vector<constant> v_pair;
 
 public:
+	container(std::initializer_list<constant> init) : v_pair(init) {};
+	
+	
 	template <typename ... ARGS>
 	void push(ARGS&&...args)
 	{
@@ -43,14 +40,26 @@ public:
 	{
 		for (auto& i : v_constants) { std::cout << i << std::endl; };
 	};
+	void print_pair()
+	{
+		for (auto& i : v_pair)
+		{
+			std::cout << i.symbol << " = " << i.value << std::endl;
+		};
+	};
+	
 };
 
 
 int main()
 {
-	container contain;
-	contain.push('A', 'B', 'C', 'D');
-	contain.print();
+	container::constant a('a', 2.33);
+	container::constant b('b', 35.3);
+	container::constant c('c', 94.67);
+	container contain{ a, b, c };
+	
+	contain.print_pair();
+	
 
 	return 0;
 }

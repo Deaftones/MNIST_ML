@@ -40,6 +40,9 @@
     <Text Include="propagation.txt">
       <Filter>Header Files</Filter>
     </Text>
+    <Text Include="Scribbles.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\t10k_images.idx3-ubyte" />

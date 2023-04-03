@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Serban\Source\Repos\Deaftones\srb_lib\include;C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Serban\Source\Repos\Deaftones\srb_lib\include;C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Serban\Source\Repos\Deaftones\srb_lib\include;C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Serban\Source\Repos\Deaftones\srb_lib\include;C:\SDKs\srb\srb_lib\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>C:\SDKs\srb\srb_lib\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -158,6 +158,7 @@
   <ItemGroup>
     <Text Include="IDX file format.txt" />
     <Text Include="propagation.txt" />
+    <Text Include="Scribbles.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\t10k-labels.idx1-ubyte" />
